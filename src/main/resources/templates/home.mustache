@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js"></script>
+    <style>
+        .grid-box {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            grid-gap: 10px;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+
+<body>
+    <select id="gubun" class="form-control">
+        <option value="1">과일</option>
+        <option value="2">생필품</option>
+    </select>
+    <div class="grid-box" id="product-box">
+      
+    </div>
+
+    <script>
+        // 0. 화면 다 그려지면 호출
+        render(1);
+
+        // 1. 셀렉트 박스 변경될 때 마다, 화면 갱신
+        $("#gubun").change(()=>{
+            let value = $("#gubun").val();
+            alert(value);
+            render(value);
+        });
+
+        // 2. 통신해서 화면 다시 그리기
+        async function render(gubun){
+            $("#product-box").html('');
+            let responseBody = await download(gubun);
+            responseBody.forEach((product)=>{
+                $("#product-box").append(productBox(product));
+            });
+
+        }
+
+        // 3. 컴퍼넌트 (디자인 결합)
+        function productBox(product){
+            return `<div class="card">
+            <div class="card-body">
+                <h4 class="card-title">${product.name}</h4>
+                <p class="card-text">${product.price}</p>
+                <p class="card-text">${product.stock}</p>
+                <p class="card-text">${product.gubun}</p>
+            </div>
+        </div>`;
+        }
+
+        // 4. 통신코드
+        async function download(gubun){
+            let response =  await fetch("/api/product?gubun="+gubun);
+            let responseBody = await response.json();
+            return responseBody;
+        }
+    </script>
+</body>
+
+</html>
