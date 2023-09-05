@@ -5,5 +5,3 @@
 
 ## 영상
 https://youtu.be/UR_cB3zRLjo
-
-## Git 주소
